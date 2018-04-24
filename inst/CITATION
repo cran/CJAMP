@@ -1,0 +1,16 @@
+citHeader("To cite CJAMP in publications use:")
+
+vers = paste('R package version', meta$Version)
+
+citEntry(
+  entry = 'manual',
+  title = paste(meta$Title),
+  author = Filter(function(p) 'aut' %in% p$role, as.person(meta$Author)),
+  year = "2018",
+  note = vers,
+  url = meta$URL,
+  textVersion = paste('Stefan Konigorski & Yildiz E. Yilmaz (', 2018, '). ', meta$Title, '. ', vers, '.', sep = '')
+)
+
+
+
