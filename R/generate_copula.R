@@ -11,6 +11,7 @@
 #'
 #' @examples
 #'
+#' set.seed(10)
 #' dat1a <- generate_clayton_copula(n = 1000, phi = 0.5)
 #' dat1b <- generate_clayton_copula(n = 1000, phi = 2)
 #' dat1c <- generate_clayton_copula(n = 1000, phi = 8)

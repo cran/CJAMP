@@ -24,6 +24,7 @@
 #'
 #' # Example 1: Test whether 2-parameter copula model has a better
 #' #            model fit compared to Clayton copula (no).
+#' set.seed(10)
 #' genodata <- generate_genodata(n_SNV = 20, n_ind = 100)
 #' phenodata <- generate_phenodata_2_copula(genodata = genodata$SNV1,
 #'                                          MAF_cutoff = 1, prop_causal = 1,
@@ -49,6 +50,7 @@
 #' lrt_copula(minusloglik_Clayton, minusloglik_2param)
 #'
 #' # Example 2: Test marginal parameters (alternative model has better fit).
+#' set.seed(10)
 #' genodata <- generate_genodata(n_SNV = 20, n_ind = 100)
 #' phenodata <- generate_phenodata_2_copula(genodata = genodata$SNV1,
 #'                                          MAF_cutoff = 1, prop_causal = 1,

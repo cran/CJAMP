@@ -6,10 +6,10 @@ citEntry(
   entry = 'manual',
   title = paste(meta$Title),
   author = Filter(function(p) 'aut' %in% p$role, as.person(meta$Author)),
-  year = "2018",
+  year = "2019",
   note = vers,
   url = meta$URL,
-  textVersion = paste('Stefan Konigorski & Yildiz E. Yilmaz (', 2018, '). ', meta$Title, '. ', vers, '.', sep = '')
+  textVersion = paste('Stefan Konigorski & Yildiz E. Yilmaz (', 2019, '). ', meta$Title, '. ', vers, '.', sep = '')
 )
 
 

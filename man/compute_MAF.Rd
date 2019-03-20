@@ -19,6 +19,7 @@ one or more genetic variants.
 }
 \examples{
 # Example of a single variant
+set.seed(10)
 genodata <- stats::rbinom(2000, 2, 0.3)
 compute_MAF(genodata)
 

@@ -42,6 +42,7 @@
 #'
 #' @examples
 #'
+#' set.seed(10)
 #' genodata <- generate_genodata(n_SNV = 20, n_ind = 1000)
 #' phenodata <- generate_phenodata_1_simple(genodata = genodata[,1],
 #'                                          type = "quantitative", b = 0)

@@ -8,15 +8,15 @@
 \alias{generate_phenodata_2_copula}
 \title{Functions to generate phenotype data.}
 \usage{
-generate_phenodata_1_simple(genodata = NULL, type = "quantitative", b = 0,
-  a = c(0, 0.5, 0.5))
+generate_phenodata_1_simple(genodata = NULL, type = "quantitative",
+  b = 0, a = c(0, 0.5, 0.5))
 
 generate_phenodata_1(genodata = NULL, type = "quantitative", b = 0.6,
   a = c(0, 0.5, 0.5), MAF_cutoff = 1, prop_causal = 0.1,
   direction = "a")
 
-generate_phenodata_2_bvn(genodata = NULL, tau = NULL, b1 = 0, b2 = 0,
-  a1 = c(0, 0.5, 0.5), a2 = c(0, 0.5, 0.5))
+generate_phenodata_2_bvn(genodata = NULL, tau = NULL, b1 = 0,
+  b2 = 0, a1 = c(0, 0.5, 0.5), a2 = c(0, 0.5, 0.5))
 
 generate_phenodata_2_copula(genodata = NULL, phi = NULL, tau = 0.5,
   b1 = 0.6, b2 = 0.6, a1 = c(0, 0.5, 0.5), a2 = c(0, 0.5, 0.5),
@@ -121,6 +121,7 @@ minor allele frequencies, so that rarer variants have larger effect sizes.
 \examples{
 
 # Generate genetic data:
+set.seed(10)
 genodata <- generate_genodata(n_SNV = 20, n_ind = 1000)
 compute_MAF(genodata)
 
@@ -136,21 +137,19 @@ phenodata4 <- generate_phenodata_1_simple(genodata = genodata,
                                           b = seq(0.1, 2, 0.1))
 phenodata5 <- generate_phenodata_1_simple(genodata = genodata[,1],
                                           type = "binary", b = 0)
-
 phenodata6 <- generate_phenodata_1(genodata = genodata[,1],
                                    type = "quantitative", b = 0,
                                    MAF_cutoff = 1, prop_causal = 0.1,
                                    direction = "a")
 phenodata7 <- generate_phenodata_1(genodata = genodata,
                                    type = "quantitative", b = 0.6,
-                                   MAF_cutoff = 0.03, prop_causal = 0.1,
+                                   MAF_cutoff = 0.1, prop_causal = 0.05,
                                    direction = "a")
 phenodata8 <- generate_phenodata_1(genodata = genodata,
                                    type = "quantitative",
                                    b = seq(0.1, 2, 0.1),
-                                   MAF_cutoff = 0.03, prop_causal = 0.1,
+                                   MAF_cutoff = 0.1, prop_causal = 0.05,
                                    direction = "a")
-
 phenodata9 <- generate_phenodata_2_bvn(genodata = genodata[,1],
                                        tau = 0.5, b1 = 0, b2 = 0)
 phenodata10 <- generate_phenodata_2_bvn(genodata = genodata,

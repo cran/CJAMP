@@ -68,6 +68,7 @@ to be \code{log_phi} and/or \code{log_theta_minus1}.
 }
 \examples{
 # Generate genetic data:
+set.seed(10)
 genodata <- generate_genodata(n_SNV = 20, n_ind = 1000)
 
 # Generate phenotype data:

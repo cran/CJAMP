@@ -30,6 +30,7 @@ function \code{\link{generate_genodata}} generates \code{n_ind}
 observations of \code{n_SNV} SNVs with random minor allele frequencies.
 }
 \examples{
+set.seed(10)
 genodata1 <- generate_singleton_data()
 compute_MAF(genodata1)
 

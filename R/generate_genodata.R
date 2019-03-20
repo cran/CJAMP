@@ -13,6 +13,7 @@
 #' @return A dataframe containing \code{n_ind} observations of \code{n_SNV} SNVs.
 #'
 #' @examples
+#' set.seed(10)
 #' genodata1 <- generate_singleton_data()
 #' compute_MAF(genodata1)
 #'

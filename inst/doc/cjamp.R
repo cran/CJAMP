@@ -13,6 +13,7 @@ generate_clayton_copula <- function(n = NULL, phi = NULL) {
 
 ## ------------------------------------------------------------------------
 # Generate phenotype data from the Clayton copula:
+set.seed(10)
 dat1a <- generate_clayton_copula(n = 1000, phi = 0.5)
 dat1b <- generate_clayton_copula(n = 1000, phi = 2)
 dat1c <- generate_clayton_copula(n = 1000, phi = 8)
@@ -155,7 +156,7 @@ generate_phenodata_1 <- function(genodata = NULL, type = "quantitative", b = 0.6
         stop("Genotype data has to be supplied")
     }
     genodata <- as.data.frame(genodata)
-    genodata <- genodata[complete.cases(genodata),]
+    genodata <- genodata[stats::complete.cases(genodata),]
     genodata <- as.data.frame(genodata)
     n_ind <- dim(genodata)[1]
     n_SNV <- dim(genodata)[2]
@@ -166,13 +167,16 @@ generate_phenodata_1 <- function(genodata = NULL, type = "quantitative", b = 0.6
     if ((!n_SNV == length(b)) & (length(b) == 1)) {
         b <- rep(b, n_SNV)
     }
-    X1 <- rnorm(n_ind, mean = 0, sd = 1)
-    X2 <- rbinom(n_ind, size = 1, prob = 0.5)
+    X1 <- stats::rnorm(n_ind, mean = 0, sd = 1)
+    X2 <- stats::rbinom(n_ind, size = 1, prob = 0.5)
     sigma1 <- 1
     causal_idx <- FALSE
+    help_causal_idx_counter <- 0
     while (!any(causal_idx)) {
-        # if no causal variants are selected (MAF <= MAF_cutoff), do it again
-        help_idx <- sample(1:dim(genodata)[2],
+      # if no causal variants are selected (MAF <= MAF_cutoff), do it again up to 10 times
+      help_causal_idx_counter <- help_causal_idx_counter + 1
+      if(help_causal_idx_counter == 10){ stop("MAF cutoff too low, no causal SNVs") }
+      help_idx <- sample(1:dim(genodata)[2],
                            ceiling(prop_causal * dim(genodata)[2]))
         causal_idx <- ((1:dim(genodata)[2] %in% help_idx) &
                        (compute_MAF(genodata) < MAF_cutoff))
@@ -191,7 +195,7 @@ generate_phenodata_1 <- function(genodata = NULL, type = "quantitative", b = 0.6
                              round(0.5 * dim(geno_causal)[2]))
         alpha_g <- (-1)^(as.numeric(!(1:dim(geno_causal)[2] %in% help_idx_3)) + 1) * alpha_g
     }
-    epsilon1 <- rnorm(n_ind, mean = 0, sd = sigma1)
+    epsilon1 <- stats::rnorm(n_ind, mean = 0, sd = sigma1)
     if (type == "quantitative") {
         Y <- a[1] + a[2] * X1 + a[3] * X2 + geno_causal %*% alpha_g + epsilon1
         Y <- as.numeric(Y)
@@ -200,7 +204,7 @@ generate_phenodata_1 <- function(genodata = NULL, type = "quantitative", b = 0.6
         P <- 1/(1 + exp(-(a[1] + a[2] * scale(X1, center = T, scale = F) +
                           a[3] * scale(X2, center = T, scale = F) +
                           geno_causal %*% alpha_g)))
-        Y <- rbinom(n_ind, 1, P)
+        Y <- stats::rbinom(n_ind, 1, P)
         Y <- as.numeric(Y)
     }
     phenodata <- data.frame(Y = Y, X1 = X1, X2 = X2)
@@ -267,7 +271,7 @@ generate_phenodata_2_copula <- function(genodata = NULL, phi = NULL, tau = 0.5,
         stop("Genotype data has to be supplied.")
     }
     genodata <- as.matrix(genodata)
-    genodata <- genodata[complete.cases(genodata),]
+    genodata <- genodata[stats::complete.cases(genodata),]
     genodata <- as.matrix(genodata)
     n_ind <- dim(genodata)[1]
     n_SNV <- dim(genodata)[2]
@@ -285,13 +289,16 @@ generate_phenodata_2_copula <- function(genodata = NULL, phi = NULL, tau = 0.5,
     if ((!n_SNV == length(b2)) & (length(b2) == 1)) {
         b2 <- rep(b2, n_SNV)
     }
-    X1 <- rnorm(n_ind, mean = 0, sd = 1)
-    X2 <- rbinom(n_ind, size = 1, prob = 0.5)
+    X1 <- stats::rnorm(n_ind, mean = 0, sd = 1)
+    X2 <- stats::rbinom(n_ind, size = 1, prob = 0.5)
     sigma1 <- 1
     sigma2 <- 1
     causal_idx <- FALSE
+    help_causal_idx_counter <- 0
     while (!any(causal_idx)) {
-        # if no causal variants are selected (MAF <= MAF_cutoff), do it again
+        # if no causal variants are selected (MAF <= MAF_cutoff), do it again up to 10 times
+        help_causal_idx_counter <- help_causal_idx_counter + 1
+        if(help_causal_idx_counter == 10){ stop("MAF cutoff too low, no causal SNVs") }
         help_idx <- sample(1:dim(genodata)[2],
                            ceiling(prop_causal * dim(genodata)[2]))
         causal_idx <- ((1:dim(genodata)[2] %in% help_idx) &
@@ -336,6 +343,7 @@ generate_phenodata_2_copula <- function(genodata = NULL, phi = NULL, tau = 0.5,
 
 ## ------------------------------------------------------------------------
 # Generate genetic data:
+set.seed(10)
 genodata <- generate_genodata(n_SNV = 20, n_ind = 1000)
 compute_MAF(genodata)
 # Generate phenotype data from the bivariate normal distribution given covariates:
@@ -754,7 +762,7 @@ lrt_param(minusloglik_1, minusloglik_2, df=2)
 ## ---- echo=FALSE---------------------------------------------------------
 cjamp <- function(copula = "Clayton", Y1 = NULL, Y2 = NULL, predictors_Y1 = NULL,
                   predictors_Y2 = NULL, scale_var = FALSE, optim_method = "BFGS",
-                  trace = 2, kkt2tol = 1e-16, SE_est = TRUE, pval_est = TRUE,
+                  trace = 0, kkt2tol = 1e-16, SE_est = TRUE, pval_est = TRUE,
                   n_iter_max = 10) {
     if (pval_est & !SE_est) {
         stop("SE_est has to be TRUE to compute p-values.")

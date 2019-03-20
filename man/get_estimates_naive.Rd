@@ -60,6 +60,7 @@ as 0-1 genotypes.
 }
 \examples{
 # Generate genetic data:
+set.seed(10)
 genodata <- generate_genodata(n_SNV = 20, n_ind = 1000)
 
 # Generate phenotype data:

@@ -82,6 +82,7 @@
 #' @examples
 #'
 #' # Generate genetic data:
+#' set.seed(10)
 #' genodata <- generate_genodata(n_SNV = 20, n_ind = 1000)
 #' compute_MAF(genodata)
 #'
@@ -97,21 +98,19 @@
 #'                                           b = seq(0.1, 2, 0.1))
 #' phenodata5 <- generate_phenodata_1_simple(genodata = genodata[,1],
 #'                                           type = "binary", b = 0)
-#'
 #' phenodata6 <- generate_phenodata_1(genodata = genodata[,1],
 #'                                    type = "quantitative", b = 0,
 #'                                    MAF_cutoff = 1, prop_causal = 0.1,
 #'                                    direction = "a")
 #' phenodata7 <- generate_phenodata_1(genodata = genodata,
 #'                                    type = "quantitative", b = 0.6,
-#'                                    MAF_cutoff = 0.03, prop_causal = 0.1,
+#'                                    MAF_cutoff = 0.1, prop_causal = 0.05,
 #'                                    direction = "a")
 #' phenodata8 <- generate_phenodata_1(genodata = genodata,
 #'                                    type = "quantitative",
 #'                                    b = seq(0.1, 2, 0.1),
-#'                                    MAF_cutoff = 0.03, prop_causal = 0.1,
+#'                                    MAF_cutoff = 0.1, prop_causal = 0.05,
 #'                                    direction = "a")
-#'
 #' phenodata9 <- generate_phenodata_2_bvn(genodata = genodata[,1],
 #'                                        tau = 0.5, b1 = 0, b2 = 0)
 #' phenodata10 <- generate_phenodata_2_bvn(genodata = genodata,
@@ -214,9 +213,12 @@ generate_phenodata_1 <- function(genodata = NULL, type = "quantitative", b = 0.6
     X2 <- stats::rbinom(n_ind, size = 1, prob = 0.5)
     sigma1 <- 1
     causal_idx <- FALSE
+    help_causal_idx_counter <- 0
     while (!any(causal_idx)) {
-        # if no causal variants are selected (MAF <= MAF_cutoff), do it again
-        help_idx <- sample(1:dim(genodata)[2],
+      # if no causal variants are selected (MAF <= MAF_cutoff), do it again up to 10 times
+      help_causal_idx_counter <- help_causal_idx_counter + 1
+      if(help_causal_idx_counter == 10){ stop("MAF cutoff too low, no causal SNVs") }
+      help_idx <- sample(1:dim(genodata)[2],
                            ceiling(prop_causal * dim(genodata)[2]))
         causal_idx <- ((1:dim(genodata)[2] %in% help_idx) &
                        (compute_MAF(genodata) < MAF_cutoff))
@@ -338,8 +340,11 @@ generate_phenodata_2_copula <- function(genodata = NULL, phi = NULL, tau = 0.5,
     sigma1 <- 1
     sigma2 <- 1
     causal_idx <- FALSE
+    help_causal_idx_counter <- 0
     while (!any(causal_idx)) {
-        # if no causal variants are selected (MAF <= MAF_cutoff), do it again
+        # if no causal variants are selected (MAF <= MAF_cutoff), do it again up to 10 times
+        help_causal_idx_counter <- help_causal_idx_counter + 1
+        if(help_causal_idx_counter == 10){ stop("MAF cutoff too low, no causal SNVs") }
         help_idx <- sample(1:dim(genodata)[2],
                            ceiling(prop_causal * dim(genodata)[2]))
         causal_idx <- ((1:dim(genodata)[2] %in% help_idx) &
